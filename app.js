@@ -1,5 +1,4 @@
 // Simple MaliotWeb3 virtual state using localStorage
-
 const STORAGE_KEY = "maliotweb3_state_v1";
 
 const defaultState = {
@@ -13,6 +12,7 @@ const defaultState = {
 
 let state = loadState();
 renderAll();
+startBotMarketLoop();
 
 // ---- State helpers ----
 
@@ -103,7 +103,7 @@ function renderMarket() {
 
     const price = document.createElement("div");
     price.className = "token-name";
-    price.textContent = (t.price).toFixed(4) + " MC";
+    price.textContent = t.price.toFixed(4) + " MC";
 
     header.appendChild(left);
     header.appendChild(price);
@@ -162,22 +162,22 @@ function renderMyTokens() {
 
     const header = document.createElement("div");
     header.className = "token-header";
-    header.innerHTML = \`
+    header.innerHTML = `
       <div>
-        <div class="token-name">\${t.name}</div>
-        <div class="token-symbol">\${t.symbol} · Degen: \${t.degen}</div>
+        <div class="token-name">${t.name}</div>
+        <div class="token-symbol">${t.symbol} · Degen: ${t.degen}</div>
       </div>
-      <div class="token-name">\${(t.price).toFixed(4)} MC</div>
-    \`;
+      <div class="token-name">${t.price.toFixed(4)} MC</div>
+    `;
     card.appendChild(header);
 
     const metrics = document.createElement("div");
     metrics.className = "token-metrics";
-    metrics.innerHTML = \`
-      <span>MC: \${t.mc.toLocaleString("en-US")}</span>
-      <span>Liq: \${t.liq.toLocaleString("en-US")}</span>
-      <span class="token-change \${t.change >= 0 ? "pos" : "neg"}">\${t.change >= 0 ? "+" : ""}\${t.change.toFixed(2)}%</span>
-    \`;
+    metrics.innerHTML = `
+      <span>MC: ${t.mc.toLocaleString("en-US")}</span>
+      <span>Liq: ${t.liq.toLocaleString("en-US")}</span>
+      <span class="token-change ${t.change >= 0 ? "pos" : "neg"}">${t.change >= 0 ? "+" : ""}${t.change.toFixed(2)}%</span>
+    `;
     card.appendChild(metrics);
 
     const desc = document.createElement("div");
@@ -209,13 +209,13 @@ function renderPortfolio() {
 
     const header = document.createElement("div");
     header.className = "token-header";
-    header.innerHTML = \`
+    header.innerHTML = `
       <div>
-        <div class="token-name">\${token.name}</div>
-        <div class="token-symbol">\$ \${token.symbol}</div>
+        <div class="token-name">${token.name}</div>
+        <div class="token-symbol">$ ${token.symbol}</div>
       </div>
-      <div class="token-name">\${(token.price).toFixed(4)} MC</div>
-    \`;
+      <div class="token-name">${token.price.toFixed(4)} MC</div>
+    `;
     card.appendChild(header);
 
     const metrics = document.createElement("div");
@@ -225,11 +225,11 @@ function renderPortfolio() {
     const avgPrice = h.avgPrice;
     const pnlPct = ((token.price - avgPrice) / avgPrice) * 100;
 
-    metrics.innerHTML = \`
-      <span>Qty: \${h.amount.toFixed(2)}</span>
-      <span>Value: \${positionValue.toFixed(2)} MC</span>
-      <span class="token-change \${pnlPct >= 0 ? "pos" : "neg"}">\${pnlPct >= 0 ? "+" : ""}\${pnlPct.toFixed(2)}%</span>
-    \`;
+    metrics.innerHTML = `
+      <span>Qty: ${h.amount.toFixed(2)}</span>
+      <span>Value: ${positionValue.toFixed(2)} MC</span>
+      <span class="token-change ${pnlPct >= 0 ? "pos" : "neg"}">${pnlPct >= 0 ? "+" : ""}${pnlPct.toFixed(2)}%</span>
+    `;
 
     card.appendChild(metrics);
     portfolioList.appendChild(card);
@@ -258,98 +258,107 @@ document.querySelectorAll(".tab").forEach((btn) => {
 
 // ---- Actions ----
 
-dailyLoginBtn.addEventListener("click", () => {
-  if (state.dailyClaimed) {
-    alert("You already claimed today.");
-    return;
-  }
-  state.balance += 1000;
-  state.dailyClaimed = true;
-  saveState();
-  renderAll();
-  alert("+1,000 MC added!");
-});
+if (dailyLoginBtn) {
+  dailyLoginBtn.addEventListener("click", () => {
+    if (state.dailyClaimed) {
+      alert("You already claimed today.");
+      return;
+    }
+    state.balance += 1000;
+    state.dailyClaimed = true;
+    saveState();
+    renderAll();
+    alert("+1,000 MC added!");
+  });
+}
 
-visitMarketBtn.addEventListener("click", () => {
-  document.querySelector('[data-tab="market"]').click();
-});
+if (visitMarketBtn) {
+  visitMarketBtn.addEventListener("click", () => {
+    document.querySelector('[data-tab="market"]').click();
+  });
+}
 
-gotoCreateBtn.addEventListener("click", () => {
-  document.querySelector('[data-tab="create"]').click();
-});
+if (gotoCreateBtn) {
+  gotoCreateBtn.addEventListener("click", () => {
+    document.querySelector('[data-tab="create"]').click();
+  });
+}
 
-claimAirdropBtn.addEventListener("click", () => {
-  if (state.airdropClaimed) {
-    alert("You already claimed this airdrop.");
-    return;
-  }
-  state.balance += 5000;
-  state.airdropClaimed = true;
-  saveState();
-  renderAll();
-  alert("+5,000 MC claimed for checking the real TGE!");
-});
+if (claimAirdropBtn) {
+  claimAirdropBtn.addEventListener("click", () => {
+    if (state.airdropClaimed) {
+      alert("You already claimed this airdrop.");
+      return;
+    }
+    state.balance += 5000;
+    state.airdropClaimed = true;
+    saveState();
+    renderAll();
+    alert("+5,000 MC claimed for checking the real TGE!");
+  });
+}
 
 // ---- Create token ----
 
-createForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  createHint.textContent = "";
-  createHint.className = "hint";
+if (createForm) {
+  createForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    createHint.textContent = "";
+    createHint.className = "hint";
 
-  const name = document.getElementById("tokenName").value.trim();
-  const symbol = document.getElementById("tokenSymbol").value.trim().toUpperCase();
-  const supply = parseInt(document.getElementById("tokenSupply").value, 10);
-  const degen = document.getElementById("tokenDegen").value;
-  const desc = document.getElementById("tokenDesc").value.trim();
+    const name = document.getElementById("tokenName").value.trim();
+    const symbol = document.getElementById("tokenSymbol").value.trim().toUpperCase();
+    const supply = parseInt(document.getElementById("tokenSupply").value, 10);
+    const degen = document.getElementById("tokenDegen").value;
+    const desc = document.getElementById("tokenDesc").value.trim();
 
-  if (!name || !symbol || !supply || supply <= 0) {
-    createHint.textContent = "Fill name, ticker and a valid supply.";
-    createHint.classList.add("error");
-    return;
-  }
+    if (!name || !symbol || !supply || supply <= 0) {
+      createHint.textContent = "Fill name, ticker and a valid supply.";
+      createHint.classList.add("error");
+      return;
+    }
 
-  if (state.balance < 10000) {
-    createHint.textContent = "Not enough MC. You need 10,000 MC to launch.";
-    createHint.classList.add("error");
-    return;
-  }
+    if (state.balance < 10000) {
+      createHint.textContent = "Not enough MC. You need 10,000 MC to launch.";
+      createHint.classList.add("error");
+      return;
+    }
 
-  // uniqueness
-  if (state.tokens.some((t) => t.symbol === symbol)) {
-    createHint.textContent = "Symbol already exists. Pick another.";
-    createHint.classList.add("error");
-    return;
-  }
+    if (state.tokens.some((t) => t.symbol === symbol)) {
+      createHint.textContent = "Symbol already exists. Pick another.";
+      createHint.classList.add("error");
+      return;
+    }
 
-  state.balance -= 10000;
+    state.balance -= 10000;
 
-  const basePrice = 0.0001 + Math.random() * 0.0005;
-  const mc = Math.round(supply * basePrice);
-  const liq = Math.round(mc * 0.1);
+    const basePrice = 0.0001 + Math.random() * 0.0005;
+    const mc = Math.round(supply * basePrice);
+    const liq = Math.round(mc * 0.1);
 
-  const token = {
-    id: Date.now(),
-    name,
-    symbol,
-    supply,
-    degen,
-    desc,
-    price: basePrice,
-    mc,
-    liq,
-    change: 0,
-  };
+    const token = {
+      id: Date.now(),
+      name,
+      symbol,
+      supply,
+      degen,
+      desc,
+      price: basePrice,
+      mc,
+      liq,
+      change: 0,
+    };
 
-  state.tokens.push(token);
-  saveState();
-  renderAll();
+    state.tokens.push(token);
+    saveState();
+    renderAll();
 
-  createHint.textContent = `Launched ${name} ($${symbol}) successfully!`;
-  createHint.classList.add("success");
+    createHint.textContent = `Launched ${name} ($${symbol}) successfully!`;
+    createHint.classList.add("success");
 
-  createForm.reset();
-});
+    createForm.reset();
+  });
+}
 
 // ---- Trading logic (virtual) ----
 
@@ -377,7 +386,7 @@ function buyToken(symbol) {
   h.avgPrice = totalCost / totalQty;
 
   token.price *= 1 + (0.02 + Math.random() * 0.03); // +2–5%
-  token.change = (Math.random() * 8 + 2); // fake 2–10% up
+  token.change = Math.random() * 8 + 2; // 2–10% up
   token.mc = Math.round(token.supply * token.price);
   token.liq = Math.round(token.mc * 0.1);
 
@@ -413,4 +422,30 @@ function sellToken(symbol) {
   state.trades += 1;
   saveState();
   renderAll();
+}
+
+// ---- Bot market loop (fake volume/bots) ----
+
+function startBotMarketLoop() {
+  setInterval(() => {
+    if (!state.tokens.length) return;
+
+    // pick random token
+    const idx = Math.floor(Math.random() * state.tokens.length);
+    const t = state.tokens[idx];
+
+    // random up or down move
+    const direction = Math.random() < 0.5 ? -1 : 1;
+    const magnitude = 0.005 + Math.random() * 0.025; // 0.5%–3% move
+    t.price *= 1 + direction * magnitude;
+    t.mc = Math.round(t.supply * t.price);
+    t.liq = Math.round(t.mc * 0.1);
+    t.change = direction * (Math.random() * 5 + 1); // 1–6% print
+
+    // count this as a "fake" trade
+    state.trades += 1;
+
+    saveState();
+    renderAll();
+  }, 8000); // every 8 seconds
 }
