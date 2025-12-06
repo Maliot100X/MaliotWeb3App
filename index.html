@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MaliotWeb3 Launchpad</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-logo">M</div>
+        <div>
+          <div class="brand-title">MaliotWeb3</div>
+          <div class="brand-subtitle">Blum-style Meme Launchpad (Virtual)</div>
+        </div>
+      </div>
+      <div class="balance">
+        <div class="balance-label">Your Balance</div>
+        <div class="balance-value" id="balanceDisplay">0 MC</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="card tge-card">
+        <div class="card-header">
+          <span class="pill pill-purple">Official TGE</span>
+          <h2>$MALIOT – Pump.fun TGE Hunt</h2>
+        </div>
+        <p class="card-text">
+          Hunt the airdrop for the real <strong>$MALIOT</strong> token. Visit the Pump.fun page,
+          watch the degen action and come back here to keep grinding virtual coins.
+        </p>
+        <div class="tge-actions">
+          <a class="btn primary" href="https://pump.fun/coin/CSZ85c44SJYe7CGf1gtMVb2bs35E7igDA6jcq6HKpump" target="_blank" rel="noopener">
+            🚀 Open $MALIOT TGE on Pump.fun
+          </a>
+          <button class="btn ghost" id="claimAirdropBtn">
+            🎁 Claim +5,000 MC (once)
+          </button>
+        </div>
+        <p class="hint">MC = MaliotCoins (in‑game only, not real crypto).</p>
+      </section>
+
+      <nav class="tabs">
+        <button class="tab active" data-tab="dashboard">Dashboard</button>
+        <button class="tab" data-tab="market">Market</button>
+        <button class="tab" data-tab="create">Create Token</button>
+        <button class="tab" data-tab="mytokens">My Tokens</button>
+        <button class="tab" data-tab="portfolio">Portfolio</button>
+      </nav>
+
+      <section id="dashboard" class="tab-content active">
+        <div class="grid">
+          <div class="card">
+            <h3>Daily Tasks</h3>
+            <ul class="list">
+              <li>
+                ✅ Login bonus
+                <button class="chip" id="dailyLoginBtn">Claim +1,000 MC</button>
+              </li>
+              <li>
+                👀 Check any market token
+                <button class="chip" id="visitMarketBtn">Go to Market</button>
+              </li>
+              <li>
+                🪙 Launch your first meme
+                <button class="chip" id="gotoCreateBtn">Create Token</button>
+              </li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Stats</h3>
+            <div class="stats">
+              <div>
+                <span class="label">Tokens launched</span>
+                <span class="value" id="statTokens">0</span>
+              </div>
+              <div>
+                <span class="label">Total trades</span>
+                <span class="value" id="statTrades">0</span>
+              </div>
+              <div>
+                <span class="label">Portfolio value</span>
+                <span class="value" id="statPortfolio">0 MC</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="market" class="tab-content">
+        <div class="card">
+          <h3>Market</h3>
+          <p class="card-text">
+            Trade virtual meme coins launched by you. Prices move with every virtual buy and sell.
+          </p>
+          <div id="marketList" class="token-list empty">
+            <p class="muted">No tokens yet. Launch one from the Create tab.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="create" class="tab-content">
+        <div class="card">
+          <h3>Launch Meme Token</h3>
+          <p class="card-text">
+            Cost: <strong>10,000 MC</strong>. This is a virtual Pump.fun/Bloom style launcher —
+            everything here is simulated.
+          </p>
+          <form id="createForm" class="form">
+            <div class="field">
+              <label>Name</label>
+              <input type="text" id="tokenName" placeholder="Turbo Maliot Doge" required />
+            </div>
+            <div class="field">
+              <label>Ticker</label>
+              <input type="text" id="tokenSymbol" placeholder="MALIOT" maxlength="6" required />
+            </div>
+            <div class="field">
+              <label>Max Supply</label>
+              <input type="number" id="tokenSupply" value="1000000000" min="1" required />
+            </div>
+            <div class="field">
+              <label>Degen Level</label>
+              <select id="tokenDegen">
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+                <option>Ultra</option>
+                <option>Nuclear</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Description</label>
+              <textarea id="tokenDesc" rows="3" placeholder="Born in Maliot’s lab, powered by pure degen vibes."></textarea>
+            </div>
+            <button type="submit" class="btn primary full">🪙 Launch for 10,000 MC</button>
+            <p class="hint" id="createHint"></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="mytokens" class="tab-content">
+        <div class="card">
+          <h3>My Tokens</h3>
+          <div id="myTokensList" class="token-list empty">
+            <p class="muted">You haven't launched any tokens yet.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="portfolio" class="tab-content">
+        <div class="card">
+          <h3>Portfolio</h3>
+          <div id="portfolioList" class="token-list empty">
+            <p class="muted">No holdings yet. Buy from the market to build your bag.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <span>MaliotWeb3 virtual launchpad · Not real crypto · Inspired by Pump.fun &amp; Blum</span>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
